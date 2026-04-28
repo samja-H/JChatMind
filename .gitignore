@@ -1,0 +1,32 @@
+# OS / editor local files
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Private environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Spring Boot local/private overrides
+application-local.yml
+application-local.yaml
+application-*.local.yml
+application-*.local.yaml
+application-secret.yml
+application-secret.yaml
+application-private.yml
+application-private.yaml
+
+# Secrets and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Runtime user data
+jchatmind/data/
