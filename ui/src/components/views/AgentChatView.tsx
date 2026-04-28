@@ -9,6 +9,7 @@ import {
   getChatMessagesBySessionId,
   getChatSession,
 } from "../../api/api.ts";
+import { SSE_BASE_URL } from "../../api/http.ts";
 import { useAgents } from "../../hooks/useAgents.ts";
 import { useChatSessions } from "../../hooks/useChatSessions.ts";
 import EmptyAgentChatView from "./agentChatView/EmptyAgentChatView.tsx";
@@ -122,9 +123,7 @@ const AgentChatView: React.FC = () => {
     if (!chatSessionId) {
       return;
     }
-    const es = new EventSource(
-      `http://localhost:8080/sse/connect/${chatSessionId}`,
-    );
+    const es = new EventSource(`${SSE_BASE_URL}/connect/${chatSessionId}`);
     es.onmessage = (event) => {
       console.log("Received message:", event.data);
     };

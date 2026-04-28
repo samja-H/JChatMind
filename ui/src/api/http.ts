@@ -13,12 +13,28 @@ export interface RequestOptions extends RequestInit {
 }
 
 // API 基础路径（可以根据环境变量配置）
-export const BASE_URL = "http://localhost:8080/api";
+function normalizeBaseUrl(value: string | undefined, fallback: string): string {
+  const resolved = value && value.trim().length > 0 ? value : fallback;
+  return resolved.replace(/\/+$/, "");
+}
+
+export const BASE_URL = normalizeBaseUrl(
+  import.meta.env.VITE_API_BASE_URL,
+  "http://localhost:8080/api",
+);
+
+export const SSE_BASE_URL = normalizeBaseUrl(
+  import.meta.env.VITE_SSE_BASE_URL,
+  "http://localhost:8080/sse",
+);
 
 /**
  * 构建完整的 URL（包含查询参数）
  */
-function buildUrl(url: string, params?: Record<string, string | number | boolean | null | undefined>): string {
+function buildUrl(
+  url: string,
+  params?: Record<string, string | number | boolean | null | undefined>,
+): string {
   const fullUrl = `${BASE_URL}${url}`;
   
   if (!params || Object.keys(params).length === 0) {

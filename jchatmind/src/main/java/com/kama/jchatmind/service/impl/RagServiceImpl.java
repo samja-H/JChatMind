@@ -4,6 +4,7 @@ import com.kama.jchatmind.mapper.ChunkBgeM3Mapper;
 import com.kama.jchatmind.model.entity.ChunkBgeM3;
 import com.kama.jchatmind.service.RagService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,10 +18,17 @@ public class RagServiceImpl implements RagService {
     // 封装本地的模型调用
     private final WebClient webClient;
     private final ChunkBgeM3Mapper chunkBgeM3Mapper;
+    private final String embeddingModel;
 
-    public RagServiceImpl(WebClient.Builder builder, ChunkBgeM3Mapper chunkBgeM3Mapper) {
-        this.webClient = builder.baseUrl("http://localhost:11434").build();
+    public RagServiceImpl(
+            WebClient.Builder builder,
+            ChunkBgeM3Mapper chunkBgeM3Mapper,
+            @Value("${jchatmind.embedding.base-url:http://localhost:11434}") String embeddingBaseUrl,
+            @Value("${jchatmind.embedding.model:bge-m3}") String embeddingModel
+    ) {
+        this.webClient = builder.baseUrl(embeddingBaseUrl).build();
         this.chunkBgeM3Mapper = chunkBgeM3Mapper;
+        this.embeddingModel = embeddingModel;
     }
 
     @Data
@@ -32,7 +40,7 @@ public class RagServiceImpl implements RagService {
         EmbeddingResponse resp = webClient.post()
                 .uri("/api/embeddings")
                 .bodyValue(Map.of(
-                        "model", "bge-m3",
+                        "model", embeddingModel,
                         "prompt", text
                 ))
                 .retrieve()
